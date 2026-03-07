@@ -1,9 +1,11 @@
 package CRUD.API.demo;
 
-import org.springframework.beans.factory.annotation.Autowired; 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 
 import javax.annotation.processing.Generated;
 
@@ -19,10 +21,15 @@ public class PokemonController {
         return pokemonService.getAllPokemon();
     }
 
-    @GetMapping("/{id}")
-    public Optional<Pokemon> getPokemonById(@PathVariable Long id) {
-        return pokemonService.getPokemonById(id);
+   @GetMapping("/{id}")
+public ResponseEntity<?> getPokemonById(@PathVariable Long id) {
+    Optional<Pokemon> pokemon = pokemonService.getPokemonById(id);
+    if (pokemon.isPresent()) {
+        return ResponseEntity.ok(pokemon.get());
+    } else {
+        return ResponseEntity.status(404).body("Pokemon with ID " + id + " not found");
     }
+}
 
     @PostMapping
     public Pokemon addPokemon(@RequestBody Pokemon pokemon) {
